@@ -281,15 +281,15 @@
         case DIR.LEFT:  move(DIR.LEFT);  break;
         case DIR.RIGHT: move(DIR.RIGHT); break;
         case DIR.UP:    rotate();        break;
-        case DIR.DOWN:  drop();          rf_manager.send({event: "move_down", data: { shape: current }}); break;
+        case DIR.DOWN:  drop();          rf_manager.send({event: "move_down", data: { shape: current }, game: "tetris" }); break;
       }
     }
 
     function move(dir) {
       var x = current.x, y = current.y;
       switch(dir) {
-        case DIR.RIGHT: x = x + 1; rf_manager.send({event: "move_right", data: { shape: current }}); break;
-        case DIR.LEFT:  x = x - 1; rf_manager.send({event: "move_left", data: { shape: current }}); break;
+        case DIR.RIGHT: x = x + 1; rf_manager.send({event: "move_right", data: { shape: current }, game: "tetris" }); break;
+        case DIR.LEFT:  x = x - 1; rf_manager.send({event: "move_left", data: { shape: current }, game: "tetris" }); break;
         case DIR.DOWN:  y = y + 1; break;
       }
       if (unoccupied(current.type, x, y, current.dir)) {
@@ -307,7 +307,7 @@
       var newdir = (current.dir == DIR.MAX ? DIR.MIN : current.dir + 1);
       if (unoccupied(current.type, current.x, current.y, newdir)) {
         current.dir = newdir;
-        rf_manager.send({event: "rotate", data: { shape: current }});
+        rf_manager.send({event: "rotate", data: { shape: current }, game: "tetris" });
         invalidate();
       }
     }
@@ -353,7 +353,7 @@
     }
 
     function removeLine(n) {
-      rf_manager.send({event: "remove_line", data: {line: n}});
+      rf_manager.send({event: "remove_line", data: {line: n}, game: "tetris" });
       var x, y;
       for(y = n ; y >= 0 ; --y) {
         for(x = 0 ; x < nx ; ++x)
