@@ -173,6 +173,7 @@
 
     function run() {
 
+      rf_manager.gameStarted();
       showStats(); // initialize FPS counter
       addEvents(); // attach keydown and resize events
 
@@ -448,12 +449,11 @@
 
     function sendBlocks(timeout) {
       if (playing) {
-        rf_manager.send({name: "board_status", event: {blocks: blocks}});
+        rf_manager.send("board_status", { event: { blocks: blocks }, game: "tetris" });
       }
-      setTimeout(sendBlocks, timeout);
     }
 
-    sendBlocks(5000);
+    setInterval(sendBlocks, 5000);
 
   </script>
 
