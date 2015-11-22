@@ -38,6 +38,7 @@
     </canvas>
   </div>
 
+  <script src="/user_app/dist/manager_bundle.js"></script>
   <script src="stats.js"></script>
   <script>
 
@@ -141,7 +142,7 @@
     // check if a piece can fit into a position in the grid
     //-----------------------------------------------------
     function occupied(type, x, y, dir) {
-      var result = false
+      var result = false;
       eachblock(type, x, y, dir, function(x, y) {
         if ((x < 0) || (x >= nx) || (y < 0) || (y >= ny) || getBlock(x,y))
           result = true;
@@ -244,7 +245,7 @@
     function clearScore()           { setScore(0); }
     function clearRows()            { setRows(0); }
     function setRows(n)             { rows = n; step = Math.max(speed.min, speed.start - (speed.decrement*rows)); invalidateRows(); }
-    function addRows(n)             { setRows(rows + n); }
+    function addRows(n)             { setRows(rows + n); } // Adds to number of rows completed.
     function getBlock(x,y)          { return (blocks && blocks[x] ? blocks[x][y] : null); }
     function setBlock(x,y,type)     { blocks[x] = blocks[x] || []; blocks[x][y] = type; invalidate(); }
     function clearBlocks()          { blocks = []; invalidate(); }
@@ -280,15 +281,15 @@
         case DIR.LEFT:  move(DIR.LEFT);  break;
         case DIR.RIGHT: move(DIR.RIGHT); break;
         case DIR.UP:    rotate();        break;
-        case DIR.DOWN:  drop();          break;
+        case DIR.DOWN:  drop();          rf_manager.send({event: "move_down", data: { shape: current }}); break;
       }
     }
 
     function move(dir) {
       var x = current.x, y = current.y;
       switch(dir) {
-        case DIR.RIGHT: x = x + 1; break;
-        case DIR.LEFT:  x = x - 1; break;
+        case DIR.RIGHT: x = x + 1; rf_manager.send({event: "move_right", data: { shape: current }}); break;
+        case DIR.LEFT:  x = x - 1; rf_manager.send({event: "move_left", data: { shape: current }}); break;
         case DIR.DOWN:  y = y + 1; break;
       }
       if (unoccupied(current.type, x, y, current.dir)) {
@@ -306,6 +307,7 @@
       var newdir = (current.dir == DIR.MAX ? DIR.MIN : current.dir + 1);
       if (unoccupied(current.type, current.x, current.y, newdir)) {
         current.dir = newdir;
+        rf_manager.send({event: "rotate", data: { shape: current }});
         invalidate();
       }
     }
@@ -351,6 +353,7 @@
     }
 
     function removeLine(n) {
+      rf_manager.send({event: "remove_line", data: {line: n}});
       var x, y;
       for(y = n ; y >= 0 ; --y) {
         for(x = 0 ; x < nx ; ++x)
