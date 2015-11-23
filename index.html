@@ -29,7 +29,7 @@
   <div id="tetris">
     <div id="menu">
       <p id="start"><a href="javascript:play();">Press Space to Play.</a></p>
-      <p><canvas id="upcoming"></canvas></p>
+      <p><canvas onclick="showUpcoming()" id="upcoming"></canvas></p>
       <p>score <span id="score">00000</span></p>
       <p>rows <span id="rows">0</span></p>
     </div>
@@ -379,7 +379,7 @@
       ctx.lineWidth = 1;
       ctx.translate(0.5, 0.5); // for crisp 1px black lines
       drawCourt();
-      drawNext();
+      // drawNext();
       drawScore();
       drawRows();
       ctx.restore();
@@ -475,7 +475,12 @@
       return board;
     }
 
-    //    setInterval(sendBlocks, 5000);
+    function showUpcoming() {
+      rf_manager.send("reveal_upcoming", { event: {}, game: "tetris" });
+      invalid.next = true;
+      drawNext();
+      setTimeout(function() {uctx.clearRect(0, 0, nu*dx, nu*dy);}, 1000);
+    }
 
   </script>
 
