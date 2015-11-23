@@ -173,7 +173,6 @@
 
     function run() {
 
-      rf_manager.gameStarted();
       showStats(); // initialize FPS counter
       addEvents(); // attach keydown and resize events
 
@@ -237,8 +236,8 @@
     // GAME LOGIC
     //-------------------------------------------------------------------------
 
-    function play() { hide('start'); reset();          playing = true;  }
-    function lose() { show('start'); setVisualScore(); playing = false; }
+    function play() { hide('start'); reset();          playing = true;  rf_manager.gameStarted(); }
+    function lose() { show('start'); setVisualScore(); playing = false; rf_manager.gameEnded(); }
 
     function setVisualScore(n)      { vscore = n || score; invalidateScore(); }
     function setScore(n)            { score = n; setVisualScore(n);  }
@@ -282,15 +281,15 @@
         case DIR.LEFT:  move(DIR.LEFT);  break;
         case DIR.RIGHT: move(DIR.RIGHT); break;
         case DIR.UP:    rotate();        break;
-        case DIR.DOWN:  drop();          rf_manager.send({name: "move_down", event: { shape: current }, game: "tetris" }); break;
+        case DIR.DOWN:  drop();          rf_manager.send("move_down", { event: { shape: current }, game: "tetris" }); break;
       }
     }
 
     function move(dir) {
       var x = current.x, y = current.y;
       switch(dir) {
-        case DIR.RIGHT: x = x + 1; rf_manager.send({name: "move_right", event: { shape: current }, game: "tetris" }); break;
-        case DIR.LEFT:  x = x - 1; rf_manager.send({name: "move_left", event: { shape: current }, game: "tetris" }); break;
+        case DIR.RIGHT: x = x + 1; rf_manager.send("move_right", { event: { shape: current }, game: "tetris" }); break;
+        case DIR.LEFT:  x = x - 1; rf_manager.send("move_left", { event: { shape: current }, game: "tetris" }); break;
         case DIR.DOWN:  y = y + 1; break;
       }
       if (unoccupied(current.type, x, y, current.dir)) {
@@ -308,16 +307,16 @@
       var newdir = (current.dir == DIR.MAX ? DIR.MIN : current.dir + 1);
       if (unoccupied(current.type, current.x, current.y, newdir)) {
         current.dir = newdir;
-        rf_manager.send({name: "rotate", event: { shape: current }, game: "tetris" });
+        rf_manager.send("rotate", { event: { shape: current }, game: "tetris" });
         invalidate();
       }
     }
 
     function drop() {
       if (!move(DIR.DOWN)) {
-        rf_manager.send("board_status", { event: { blocks: generateBoard(blocks) }, game: "tetris" });
         addScore(10);
         dropPiece();
+        rf_manager.send("board_status", { event: { blocks: generateBoard(blocks) }, game: "tetris" });
         removeLines();
         setCurrentPiece(next);
         setNextPiece(randomPiece());
@@ -355,12 +354,13 @@
     }
 
     function removeLine(n) {
-      rf_manager.send({event: "remove_line", data: {line: n}, game: "tetris" });
+      rf_manager.send("remove_line", { event: { line: n }, game: "tetris" });
       var x, y;
       for(y = n ; y >= 0 ; --y) {
         for(x = 0 ; x < nx ; ++x)
           setBlock(x, y, (y == 0) ? null : getBlock(x, y-1));
       }
+      rf_manager.send("board_status", { event: { blocks: generateBoard(blocks) }, game: "tetris" });
     }
 
     //-------------------------------------------------------------------------
