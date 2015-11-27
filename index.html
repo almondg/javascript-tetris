@@ -29,6 +29,7 @@
   <div id="tetris">
     <div id="menu">
       <p id="start"><a href="javascript:play();">Press Space to Play.</a></p>
+      <p id="instructions" style="visibility: hidden;">Press to See Next.</p>
       <p><canvas onclick="showUpcoming()" id="upcoming"></canvas></p>
       <p>score <span id="score">00000</span></p>
       <p>rows <span id="rows">0</span></p>
@@ -236,8 +237,8 @@
     // GAME LOGIC
     //-------------------------------------------------------------------------
 
-    function play() { hide('start'); reset();          playing = true;  rf_manager.gameStarted(); }
-    function lose() { show('start'); setVisualScore(); playing = false; rf_manager.gameEnded(); }
+    function play() { hide('start'); show('instructions'); reset();          playing = true;  rf_manager.gameStarted(); }
+    function lose() { show('start'); hide('instructions'); setVisualScore(); playing = false; rf_manager.gameEnded(); }
 
     function setVisualScore(n)      { vscore = n || score; invalidateScore(); }
     function setScore(n)            { score = n; setVisualScore(n);  }
