@@ -43,6 +43,10 @@
   <script src="stats.js"></script>
   <script>
 
+    var config = rf_manager.getConfig();
+    var reveal_time = (config && config.reveal_time) ? config.reveal_time : 1000;
+    console.log(config);
+
     //-------------------------------------------------------------------------
     // base helper methods
     //-------------------------------------------------------------------------
@@ -480,7 +484,7 @@
       rf_manager.send("reveal_upcoming", { event: {}, game: "tetris" });
       invalid.next = true;
       drawNext();
-      setTimeout(function() {uctx.clearRect(0, 0, nu*dx, nu*dy);}, 1000);
+      setTimeout(function() {uctx.clearRect(0, 0, nu*dx, nu*dy);}, reveal_time);
     }
 
   </script>
