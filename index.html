@@ -44,7 +44,7 @@
   <script>
 
     var config = rf_manager.getConfig();
-    var reveal_time = (config && config.reveal_time) ? config.reveal_time : 1000;
+    var reveal_time = (config && config.reveal_time) ? config.reveal_time : 500;
     console.log(config);
 
     //-------------------------------------------------------------------------
@@ -365,7 +365,7 @@
         for(x = 0 ; x < nx ; ++x)
           setBlock(x, y, (y == 0) ? null : getBlock(x, y-1));
       }
-      rf_manager.send("board_status", { event: { blocks: generateBoard(blocks) }, game: "tetris" });
+      rf_manager.send("board_status", { blocks: generateBoard(blocks) });
     }
 
     //-------------------------------------------------------------------------
