@@ -286,7 +286,7 @@
         case DIR.LEFT:  move(DIR.LEFT);  break;
         case DIR.RIGHT: move(DIR.RIGHT); break;
         case DIR.UP:    rotate();        break;
-        case DIR.DOWN:  drop();          rf_manager.send("move_down", { shape: current }); break;
+        case DIR.DOWN:  drop();          /*rf_manager.send("move_down", { shape: current });*/ break;
       }
     }
 
